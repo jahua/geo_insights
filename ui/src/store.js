@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
-import { keplerGlReducer } from '@kepler.gl/reducers';
+// import { keplerGlReducer } from '@kepler.gl/reducers'; // Removed Kepler.gl
 
 // Application reducers
 import mapReducer from './reducers/mapReducer';
@@ -10,8 +10,8 @@ import chatReducer from './reducers/chatReducer';
 
 // Combine all reducers
 const rootReducer = combineReducers({
-  // Kepler.gl reducer
-  keplerGl: keplerGlReducer,
+  // Kepler.gl reducer - Removed
+  // keplerGl: keplerGlReducer,
   
   // Custom application reducers
   map: mapReducer,

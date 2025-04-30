@@ -23,46 +23,24 @@ const SET_VISIBLE_LAYERS = 'SET_VISIBLE_LAYERS';
 
 // Initial state for the map
 const initialState = {
-  // Viewport settings
-  center: [7.4417, 46.9477], // Bern, Switzerland
-  zoom: 8,
-  
-  // Map style
-  mapStyle: 'mapbox://styles/mapbox/light-v11',
-  
-  // UI state
-  loading: false,
-  error: null,
-  
-  // Map loaded state
-  mapLoaded: false,
-  
-  // Visible layers
-  layers: {
+  center: [8.2275, 46.8182], // Switzerland center
+  zoom: 7,
+  mapStyle: 'mapbox://styles/mapbox/light-v10',
+  isMapLoaded: false,
+  visibleLayers: {
     landmarks: true,
-    heatmap: false,
-    clusters: false,
-    '3d': false,
-    regions: false,
-    labels: true,
-    baseLayer: true
+    boundaries: true,
+    ticino: false,
+    tourismRegions: false
   },
-  
-  // 3D view settings
-  enable3D: false,
-  enablePitch: true,
-  pitchValue: 0, // Degrees (0-60)
-  bearingValue: 0, // Degrees (0-360)
-  
-  // Rotation enabled state
-  rotationEnabled: false,
-  
-  // Business insights state
-  businessInsights: {
-    loading: false,
-    data: null,
-    error: null
-  }
+  is3DMode: false,
+  isRotating: false,
+  rotationSpeed: 0.5,
+  pitch: 60,
+  bearing: 0,
+  landmarks: [],
+  loading: false,
+  error: null
 };
 
 // Create the map slice with reducers
@@ -100,21 +78,21 @@ const mapSlice = createSlice({
     
     // Map loaded state actions
     updateMapLoaded: (state, action) => {
-      state.mapLoaded = action.payload;
+      state.isMapLoaded = action.payload;
     },
     
     // Layer visibility actions
     toggleLayer: (state, action) => {
       const { layerName, visible } = action.payload;
       if (typeof visible === 'boolean') {
-        state.layers[layerName] = visible;
+        state.visibleLayers[layerName] = visible;
       } else {
-        state.layers[layerName] = !state.layers[layerName];
+        state.visibleLayers[layerName] = !state.visibleLayers[layerName];
       }
     },
     
     setLayerVisibility: (state, action) => {
-      state.layers = { ...action.payload };
+      state.visibleLayers = { ...action.payload };
     },
     
     // Location actions
@@ -132,20 +110,20 @@ const mapSlice = createSlice({
     
     // 3D view actions
     toggle3D: (state) => {
-      state.enable3D = !state.enable3D;
+      state.is3DMode = !state.is3DMode;
     },
     
     toggleRotation: (state) => {
-      state.rotationEnabled = !state.rotationEnabled;
+      state.isRotating = !state.isRotating;
     },
     
     // Reset map view
     resetMapView: (state) => {
       state.center = initialState.center;
       state.zoom = initialState.zoom;
-      state.enable3D = initialState.enable3D;
-      state.pitchValue = initialState.pitchValue;
-      state.bearingValue = initialState.bearingValue;
+      state.is3DMode = initialState.is3DMode;
+      state.pitch = initialState.pitch;
+      state.bearing = initialState.bearing;
     },
     
     // Business insights actions
@@ -169,6 +147,9 @@ const mapSlice = createSlice({
         loading: false,
         error: action.payload
       };
+    },
+    setLandmarks: (state, action) => {
+      state.landmarks = action.payload;
     }
   }
 });
@@ -191,7 +172,8 @@ export const {
   resetMapView,
   fetchBusinessInsightsRequest,
   fetchBusinessInsightsSuccess,
-  fetchBusinessInsightsFailure
+  fetchBusinessInsightsFailure,
+  setLandmarks
 } = mapSlice.actions;
 
 // Map action creator to Redux action

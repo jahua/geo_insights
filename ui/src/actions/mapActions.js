@@ -23,84 +23,70 @@ export const FETCH_BUSINESS_INSIGHTS_FAILURE = 'FETCH_BUSINESS_INSIGHTS_FAILURE'
  * @param {Object} viewport - New viewport settings
  * @returns {Function} - Thunk action
  */
-export const updateViewport = (viewport) => (dispatch) => {
-  dispatch(setViewport(viewport));
-};
+export const updateViewport = (viewport) => ({
+  type: 'map/setViewport',
+  payload: viewport
+});
 
 /**
  * Change the map style
  * @param {string} style - Map style URL
  * @returns {Function} - Thunk action
  */
-export const changeMapStyle = (style) => (dispatch) => {
-  dispatch(changeMapStyleReducer(style));
-};
+export const changeMapStyle = (style) => ({
+  type: 'map/setMapStyle',
+  payload: style
+});
 
 /**
  * Set map as loaded
  * @param {boolean} loaded - Map loaded state
  * @returns {Function} - Thunk action
  */
-export const updateMapLoaded = (loaded) => (dispatch) => {
-  dispatch({ type: UPDATE_MAP_LOADED, payload: loaded });
-};
+export const updateMapLoaded = (loaded) => ({
+  type: 'map/updateMapLoaded',
+  payload: loaded
+});
 
 /**
  * Toggle a map layer
  * @param {string} layerName - Name of the layer to toggle
  * @returns {Function} - Thunk action
  */
-export const toggleLayer = (layerName) => (dispatch) => {
-  dispatch(toggleLayerReducer(layerName));
-};
+export const toggleLayer = (layerName, visible) => ({
+  type: 'map/toggleLayer',
+  payload: { layerName, visible }
+});
 
 /**
  * Set all layer visibility
  * @param {Object} layers - Layer visibility settings
  * @returns {Function} - Thunk action
  */
-export const setLayerVisibility = (layers) => (dispatch) => {
-  // For each layer, dispatch toggle action to set to desired state
-  Object.entries(layers).forEach(([layer, isVisible]) => {
-    dispatch(toggleLayerReducer({ layer, forcedState: isVisible }));
-  });
-};
+export const setLayerVisibility = (layers) => ({
+  type: 'map/setLayerVisibility',
+  payload: layers
+});
 
 /**
  * Fly to a specific location
  * @param {Object} location - Location with lat, lng, zoom
  * @returns {Function} - Thunk action
  */
-export const flyToLocation = (location) => (dispatch) => {
-  const viewport = {
-    latitude: location.latitude || location.lat,
-    longitude: location.longitude || location.lng,
-    zoom: location.zoom || 14,
-    transitionDuration: 1000
-  };
-  
-  dispatch(setViewport(viewport));
-};
+export const flyToLocation = (location) => ({
+  type: 'map/flyToLocation',
+  payload: location
+});
 
 /**
  * Fit map to bounds
  * @param {Array} bounds - Bounds as [[minLng, minLat], [maxLng, maxLat]]
  * @returns {Function} - Thunk action
  */
-export const fitBounds = (bounds) => (dispatch) => {
-  // This is a placeholder - in a real implementation,
-  // you would calculate the viewport from bounds
-  const [[minLng, minLat], [maxLng, maxLat]] = bounds;
-  
-  const viewport = {
-    latitude: (minLat + maxLat) / 2,
-    longitude: (minLng + maxLng) / 2,
-    zoom: 11,
-    transitionDuration: 1000
-  };
-  
-  dispatch(setViewport(viewport));
-};
+export const fitBounds = (bounds) => ({
+  type: 'map/fitBounds',
+  payload: bounds
+});
 
 /**
  * Toggle map rotation functionality
@@ -108,6 +94,11 @@ export const fitBounds = (bounds) => (dispatch) => {
  */
 export const toggleRotation = () => ({
   type: 'map/toggleRotation'
+});
+
+export const setLandmarks = (landmarks) => ({
+  type: 'map/setLandmarks',
+  payload: landmarks
 });
 
 export const fetchBusinessInsights = (bbox) => async (dispatch) => {
